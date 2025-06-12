@@ -133,5 +133,44 @@ function AbrirModalEditar(id, nombre, apellido, correo){
     modalEditar.showModal();
 }
 
+document.getElementById("frmEditar").addEventListener("submit", async e => {
+    e.preventDefault(); //Evita que el formulario se envíe de un solo
+
+    const id = document.getElementById("txtIdEditar").value;
+    const nombre = document.getElementById("txtNombreEditar").value.trim();
+    const apellido = document.getElementById("txtApellidoEditar").value.trim();
+    const correo = document.getElementById("txtEmailEditar").value.trim();
+
+    //Validación de los campos
+    if(!id || !nombre || !apellido || !correo){
+        alert("Complete todos los campos");
+        return; //Evita que el código se siga ejecutando
+    }
+
+    //Llamada a la API
+    const respuesta = await fetch(`${API_URL}/${id}`, {
+        method: "PUT", 
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({nombre,apellido,correo})
+    });
+
+    if(respuesta.ok){
+        //Mensaje de confirmación
+        alert("El registro fue actualizado correctamente");
+
+        //Limpiar el formulario
+        document.getElementById("frmEditar").reset();
+
+        //Cerrar el modal (dialog)
+        modalEditar.close();
+
+        //Recarga la tabla
+        ObtenerRegistros();
+    }
+    else{
+        alert("Error, no se pudo guardar");
+    }
+});
+
 
 
